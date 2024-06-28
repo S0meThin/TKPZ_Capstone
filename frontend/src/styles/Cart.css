@@ -1,0 +1,42 @@
+.cart-container {
+    
+}
+
+.cart-content {
+    display: flex;
+}
+
+.cart-heading {
+    font-size: 66px;
+    text-align: center;
+    display: block;
+}
+
+.cart-book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cart-removeBtn {
+    width: 70px;
+    text-align:center;
+}
+
+.cart-message {
+    display: block;
+    text-align: center;
+    font-size: 32px;
+}
+
+.cart-removeBtn {
+    border-radius: 10px;
+    font-size: 24px;
+    transition: all 0.5s ease;
+    width: 110px;
+}
+
+.cart-removeBtn:hover {
+    color: white;
+    background-color: black;
+}

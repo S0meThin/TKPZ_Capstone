@@ -1,0 +1,36 @@
+.book-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.book-bookCard {
+    width: 500px;
+    margin-top: 100px;
+}
+
+.book-name {
+    font-size: 54px;
+    font-weight: 600;
+}
+
+.book-genre {
+    font-size: 40px;
+}
+
+.book-author {
+    font-size: 40px;
+}
+
+.book-outOfStock {
+    font-size: 30px;
+    color: red;
+}
+
+.book-inStock {
+    font-size: 30px;
+}
+
+.book-cart {
+
+}

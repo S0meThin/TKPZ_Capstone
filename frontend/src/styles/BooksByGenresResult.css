@@ -1,0 +1,8 @@
+.BBGR-container {
+    display: flex;
+    margin-top: 70px;
+}
+
+.BBGR-link {
+    text-decoration: none;
+}

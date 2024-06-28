@@ -1,0 +1,15 @@
+.BookComponent-container {
+    margin-right: 50px;
+    margin-left: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: black;
+    font-weight: 500;
+    margin-top: 50px;
+}
+
+.cart-link {
+    text-decoration: none;
+    color: black;
+}

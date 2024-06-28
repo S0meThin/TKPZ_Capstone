@@ -1,0 +1,14 @@
+body {
+    background-color: lightgrey;
+}
+
+.component {
+    border: 1px solid black;
+    color: white;
+    font-size: 30px;
+}
+
+.genre-container {
+    display: flex;
+    
+}
