@@ -31,6 +31,9 @@ function Login() {
       if (response.ok) {
         return response.json();
       }
+      else {
+        alert("Wrong credentials!")
+      }
       throw new Error('Something went wrong');
     })
     .then(data => {

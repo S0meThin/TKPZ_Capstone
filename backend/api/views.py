@@ -32,9 +32,68 @@ class AppView(View):
             finaljson = json.dumps(finalObject)
 
             return JsonResponse(finaljson, content_type = 'application/json',safe=False)
-        
-    def booksDelete(request):
-        return HttpResponse('{"name":"Oleh", "age":30, "car":null}')
+    
+    @csrf_exempt
+    def booksAdd(request):
+        if request.method == "POST":
+            data = (request.body)
+            data = json.loads(data)
+            try:
+                token = data["token"]
+                userT = userToken.objects.get(token = token)
+                if userT is not None:
+                    try:
+                        resultBook = book(name = data['name'], author = data['author'], price = data['price'], oh = data['oh'], picture = data['picture'], genre = genre.objects.get(name = data['genre']))
+                        resultBook.save()
+                        return JsonResponse({'message': 'ADDED'}, status=200)
+                    except:
+                        return JsonResponse({'error': 'An error occured'}, status=401)
+            except:
+                return JsonResponse({'error': 'An error occured'}, status=402)
+
+    @csrf_exempt
+    def booksDelete(request, id):
+        if request.method == "DELETE":
+            data = (request.body)
+            data = json.loads(data)
+            try:
+                token = data["token"]
+                userT = userToken.objects.get(token = token)
+                if userT is not None:
+                    try:
+                        resultBook = book.objects.get(id = id)
+                        resultBook.delete()
+                        return JsonResponse({'message': 'DELETED'}, status=200)
+                    except:
+                        return JsonResponse({'error': 'An error occured'}, status=401)
+            except:
+                return JsonResponse({'error': 'An error occured'}, status=402)
+    
+    @csrf_exempt
+    def booksEdit(request, id):
+        if request.method == "POST":
+            data = (request.body)
+            data = json.loads(data)
+            try:
+                token = data["token"]
+                userT = userToken.objects.get(token = token)
+                if userT is not None:
+                    try:
+                        resultBook = book.objects.get(id = id)
+                        resultBook.name = data["name"]
+                        resultBook.author = data["author"]
+                        resultBook.genre = genre.objects.get(name = data['genre'])
+                        resultBook.oh = data["oh"]
+                        resultBook.price = data["price"]
+                        resultBook.picture = data["picture"]
+                        resultBook.save()
+                        return JsonResponse({'message': 'UPDATED'}, status=200)
+                    except Exception as e: 
+                        print(e)
+                        return JsonResponse({'error': 'An error occured'}, status=401)
+            except:
+                return JsonResponse({'error': 'An error occured'}, status=402)
+                
     
     def genres(request):
         if request.method == "GET":
@@ -128,6 +187,29 @@ class AppView(View):
                 return JsonResponse({'message': 'Success'}, status=200)
             else:
                 return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+    @csrf_exempt      
+    def users(request):
+        if request.method == "POST":
+            data = (request.body)
+            data = json.loads(data)
+            try:
+                token = data["token"]
+                userT = userToken.objects.get(token = token)
+                if userT is not None:
+                    users = appUser.objects.all()
+                    finalObject = {"users":[]}
+            
+                    for u in users:
+                        finalObject["users"].append({"id":u.id ,"username": u.username, "role": u.role})
+
+                    finaljson = json.dumps(finalObject)
+
+                    return JsonResponse(finaljson, content_type = 'application/json',safe=False)
+                return JsonResponse({"error": 'Something went wrong'}, status=401)
+            except:
+                return JsonResponse({"error": 'Something went wrong'}, status=401)
+
             
     @csrf_exempt
     def account(request):
@@ -155,6 +237,68 @@ class AppView(View):
             else:
                 return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
+    @csrf_exempt
+    def userById(request, id):
+        if request.method == "GET":
+            resultUser = appUser.objects.get(id = id)
+            finalObject = {"id":resultUser.id, "username": resultUser.username, "role": resultUser.role, "email": resultUser.email}
+            finaljson = json.dumps(finalObject)
+
+            return JsonResponse(finaljson, content_type = 'application/json',safe=False)
+
+    @csrf_exempt
+    def usersAdd(request):
+        if request.method == "POST":
+            data = (request.body)
+            data = json.loads(data)
+            try:
+                token = data["token"]
+                userT = userToken.objects.get(token = token)
+                if userT is not None:
+                    try:
+                        resultUser = appUser(username = data["username"], email = data["email"], role = data["role"])
+                        resultUser.set_password(data["password"])
+                        resultUser.save()
+                        return JsonResponse({'message': 'ADDED'}, status=200)
+                    except:
+                        return JsonResponse({'error': 'An error occured'}, status=401)
+            except:
+                return JsonResponse({'error': 'An error occured'}, status=402)
+
+
+    @csrf_exempt
+    def usersDelete(request, id):
+        if request.method == "DELETE":
+            try:
+                resultUser = appUser.objects.get(id = id)
+                resultUser.delete()
+                return JsonResponse({'message': 'DELETED'}, status=200)
+            except:
+                return JsonResponse({'error': 'An error occured'}, status=401)
+    
+    @csrf_exempt
+    def usersEdit(request, id):
+        if request.method == "POST":
+            data = (request.body)
+            data = json.loads(data)
+            try:
+                token = data["token"]
+                userT = userToken.objects.get(token = token)
+                if userT is not None:
+                    try:
+                        resultUser = appUser.objects.get(id = id)
+                        resultUser.username = data["username"]
+                        if data['password'] != "":
+                            resultUser.set_password(data["password"])
+                        resultUser.email = data["email"]
+                        resultUser.role = data["role"]
+                        resultUser.save()
+                        return JsonResponse({'message': 'UPDATED'}, status=200)
+                    except Exception as e: 
+                        print(e)
+                        return JsonResponse({'error': 'An error occured'}, status=401)
+            except:
+                return JsonResponse({'error': 'An error occured'}, status=402)
 
     @csrf_exempt
     def currentUser(request):
@@ -163,18 +307,14 @@ class AppView(View):
             data = json.loads(data)
 
             token = data["token"]
-            resultUser = userToken.objects.get(token = token)
             try:
                 resultUser = userToken.objects.get(token = token)
+                if resultUser is not None:
+                    return JsonResponse({'message': 'Success', 'userRole': resultUser.user.role}, status=200)
+                else:
+                    return JsonResponse({'error': 'Fail'}, status=401)
             except:
-                print(resultUser)
-                print(token)  
                 return JsonResponse({'error': 'Invalid token'}, status=401)
-            print(resultUser)
-            if resultUser is not None:
-                return JsonResponse({'message': 'Success'}, status=200)
-            else:
-                return JsonResponse({'error': 'Fail'}, status=401)
 
     @csrf_exempt        
     def cart(request):
